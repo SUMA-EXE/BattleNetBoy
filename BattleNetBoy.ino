@@ -76,10 +76,10 @@ int CPcel = 0;
 int CPco = 0;
 
 /*const unsigned char PROGMEM rever[] =
-{
+  {
   // width, height,
   0x00, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x00,
-};*/
+  };*/
 
 //キャラクター描写
 void GWrite (int G_x, int G_y, int G_m, int G_P, int G_t) { //x,y,画像種類,パターン,色抜き
@@ -309,8 +309,6 @@ int ATKtime (int A_n) {
     No = 4;
   } else if (A_n == 6) {
     No = 1;
-  } else if (A_n == 8) {
-    No = 4;
   } else if (A_n == 9) {
     No = 8;
   } else if (A_n == 10) {
@@ -393,14 +391,14 @@ void setup() {
   // put your setup code here, to run once:
   arduboy.begin();
   arduboy.setFrameRate(60);
-  randomSeed(0);
+  arduboy.initRandomSeed();
 
-  SED=EEPROM.read(495);
+  SED = EEPROM.read(495);
   for (int L = 0; L <= 14; L++) {
     FrB[L] = EEPROM.read(L + 496);
 
     if (FrB[L] == 0) {
-      FrB[L] = 5 * (L / 5 == 0) + 6 * (L / 5 == 1) + 11 * (L / 5 == 2);
+      FrB[L] = 6 * (1 + L / 5); // 5* (L / 5 == 0) + 6 * (L / 5 == 1) + 11 * (L / 5 == 2);
     }
 
   }
@@ -414,7 +412,7 @@ void loop() {
   arduboy.clear();
 
   arduboy.pollButtons();
-  BGM=0;
+  BGM = 0;
 
   if (mode == 0) {
     //モード選択
@@ -483,6 +481,8 @@ void loop() {
       MAXHP[1] = 1000;
     } else if (LEV[1] == 2) {
       MAXHP[1] = 2000;
+    } else if (LEV[1] == 3) {
+      MAXHP[1] = 3000;
     }
 
 
@@ -522,17 +522,21 @@ void loop() {
 
     arduboy.setCursor(28, 16);
     arduboy.print(F("LV"));
+    if (LEV[1]<3){
     arduboy.print(LEV[1] + 1);
+    }else{
+    arduboy.print(F("SP"));
+    }
     arduboy.setCursor(28, 24);
     arduboy.print(F("Card Folder"));
     arduboy.setCursor(28, 32);
     arduboy.print(F("CPU1 VS CPU2"));
 
     arduboy.setCursor(92, 0);
-    if (SED==1){
-    arduboy.print(F("SE:ON"));
-    }else{
-    arduboy.print(F("SE:OFF"));
+    if (SED == 1) {
+      arduboy.print(F("SE:ON"));
+    } else {
+      arduboy.print(F("SE:OFF"));
     }
 
     for (int LL = 0; LL <= 2; LL = LL + 2) {
@@ -544,8 +548,8 @@ void loop() {
 
     arduboy.setCursor(20, xx * 8);
     if (xx == 11) {
-    arduboy.setCursor(84, 0);
-    }else if (xx > 7) {
+      arduboy.setCursor(84, 0);
+    } else if (xx > 7) {
       arduboy.setCursor(68, (xx - 3) * 8);
     }
     arduboy.print(F(">"));
@@ -564,10 +568,10 @@ void loop() {
 
     if (arduboy.justPressed(UP_BUTTON)) {
       //BGM=3;
-      xx = (xx + 11)%12;
+      xx = (xx + 11) % 12;
     } else if (arduboy.justPressed(DOWN_BUTTON)) {
       //BGM=3;
-      xx = (xx + 1)%12;
+      xx = (xx + 1) % 12;
     } /*else if (arduboy.justPressed(RIGHT_BUTTON)) {
       //BGM=3;
     } else if (arduboy.justPressed(LEFT_BUTTON)) {
@@ -578,15 +582,15 @@ void loop() {
 
 
     if (  (arduboy.justPressed(A_BUTTON)) or (arduboy.justPressed(B_BUTTON)) ) {
-      
-      CPUtype = (CPUtype + (xx == 1))%5;
-      LEV[1] = (LEV[1] + (xx == 2))%3;
+
+      CPUtype = (CPUtype + (xx == 1)) % 5;
+      LEV[1] = (LEV[1] + (xx == 2)) % 4;
 
       mode = 0 + (xx == 0) + (xx == 3) * 2 + (xx == 4) * 3;
-      
-      if (xx==11){
-        SED = (SED + 1)%2;
-          EEPROM.write(495, SED);
+
+      if (xx == 11) {
+        SED = (SED + 1) % 2;
+        EEPROM.write(495, SED);
       }
       if (xx >= 5) {
         Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] = (Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] + 1) % 23;
@@ -595,7 +599,7 @@ void loop() {
 
 
     for (int L = 0; L <= 10; L++) {
-      if ((xx >= 5)and(xx != 11)) {
+      if ((xx >= 5) and (xx != 11)) {
         if (CPcode(Matk[(xx - 5) % 3][((xx - 5) / 3) * 2]) == 0) {
           (Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] = Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] + 1) % 23;
         }
@@ -638,8 +642,8 @@ void loop() {
         }
       }
     }
-//    arduboy.setCursor(64 * (xx / 8 == 1)-1, (xx % 8) * 8);
-//    arduboy.print(F(">"));
+    //    arduboy.setCursor(64 * (xx / 8 == 1)-1, (xx % 8) * 8);
+    //    arduboy.print(F(">"));
     for (int L = 0; L <= 14; L++) {
       CPWrite(64 * (L / 8 == 1) + 4, (L % 8) * 8 + 4, 1, 1);
       CPWrite(64 * (L / 8 == 1) + 4, (L % 8) * 8 + 4, FrB[L], 0);
@@ -654,13 +658,13 @@ void loop() {
     }
     arduboy.setCursor(9 + 64, 7 * 8);
     arduboy.print(F("<OK>"));
-    arduboy.drawRect(64 * (xx / 8 == 1)+9, (xx % 8) * 8, 37, 8, 1);
-    
-  /*
-    if ((TIME / 5) % 2 == 0) {
-      arduboy.drawBitmap(64 * (xx / 8 == 1), (xx % 8) * 8, rever, 8, 8, 2);
-    }
-  */
+    arduboy.drawRect(64 * (xx / 8 == 1) + 9, (xx % 8) * 8, 37, 8, 1);
+
+    /*
+      if ((TIME / 5) % 2 == 0) {
+        arduboy.drawBitmap(64 * (xx / 8 == 1), (xx % 8) * 8, rever, 8, 8, 2);
+      }
+    */
   } else if (mode == 3) {
 
     Matk[0][1] = Matk[0][2];
@@ -713,8 +717,8 @@ void loop() {
         if (Hnd[CPcel] == 0) {
           CPcel = 0;
         }
-        
-        BGM=16;
+
+        BGM = 16;
       }
 
       if ( arduboy.justPressed(B_BUTTON) ) {
@@ -793,13 +797,13 @@ void loop() {
                 MT[L] = 20;
               } else if (LEV[L] == 1) {
                 MT[L] = 10;
-              } else {
+              } else if (LEV[L] == 2){
                 MT[L] = 5;
               }
 
               MO[L] = 23;
             } else if (PRM[L] % 10 == 0) {
-              MT[L] = 4-LEV[L];
+              MT[L] = 4 - LEV[L];
               MO[L] = 8;
             } else if (PRM[L] % 25 == 11) {
               MT[L] = ATKtime(Matk[0][L]);
@@ -826,9 +830,9 @@ void loop() {
           DM[x][y] = 0;
           INM[x][y] = 0;
           if (VM[x][y] > 0) {
-            if (VM[x][y] == 3){
-        BGM=1;
-          }
+            if (VM[x][y] == 3) {
+              BGM = 1;
+            }
             VM[x][y]--;
           }
         }
@@ -858,12 +862,13 @@ void loop() {
             OHIT[L] = OHIT[L + 1];
             OHP[L + 1] = 0;
             OM[L + 1] = 0;
-/*            OT[L + 1] = 0;
-            OX[L + 1] = 0;
-            OY[L + 1] = 0;
-            OB[L + 1] = 0;
-            OHIT[L + 1] = 0;
-*/          }
+            /*            OT[L + 1] = 0;
+                        OX[L + 1] = 0;
+                        OY[L + 1] = 0;
+                        OB[L + 1] = 0;
+                        OHIT[L + 1] = 0;
+            */
+          }
         }
       }
 
@@ -897,16 +902,32 @@ void loop() {
               TY[TC] = OY[L];
               TP[TC] = OX[L] > 2;
               TC = (TC + 1) % 10;
-      BGM=4;
+              BGM = 4;
             }
             if ( (OM[L] == 3) and (OHP[L] != 100) and (OHP[L] > 0) ) {
               if (OX[L] != 5) {
                 DM[OX[L] + 1][OY[L]] = 100 - OHP[L];
                 VM[OX[L] + 1][OY[L]] = 4;
+                if (OY[L] != 0) {
+                  DM[OX[L] + 1][OY[L] - 1] = 100 - OHP[L];
+                  VM[OX[L] + 1][OY[L] - 1] = 4;
+                }
+                if (OY[L] != 2) {
+                  DM[OX[L] + 1][OY[L] + 1] = 100 - OHP[L];
+                  VM[OX[L] + 1][OY[L] + 1] = 4;
+                }
               }
               if (OX[L] != 0) {
                 DM[OX[L] - 1][OY[L]] = 100 - OHP[L];
                 VM[OX[L] - 1][OY[L]] = 4;
+                if  (OY[L] != 0) {
+                  DM[OX[L] - 1][OY[L] - 1] = 100 - OHP[L];
+                  VM[OX[L] - 1][OY[L] - 1] = 4;
+                }
+                if (OY[L] != 2) {
+                  DM[OX[L] - 1][OY[L] + 1] = 100 - OHP[L];
+                  VM[OX[L] - 1][OY[L] + 1] = 4;
+                }
               }
               if (OY[L] != 0) {
                 DM[OX[L]][OY[L] - 1] = 100 - OHP[L];
@@ -916,25 +937,25 @@ void loop() {
                 DM[OX[L]][OY[L] + 1] = 100 - OHP[L];
                 VM[OX[L]][OY[L] + 1] = 4;
               }
-
-              if ((OX[L] != 5) and (OY[L] != 0)) {
+              /*
+                if ((OX[L] != 5) and (OY[L] != 0)) {
                 DM[OX[L] + 1][OY[L] - 1] = 100 - OHP[L];
                 VM[OX[L] + 1][OY[L] - 1] = 4;
-              }
-              if ((OX[L] != 0) and (OY[L] != 0)) {
+                }
+                if ((OX[L] != 0) and (OY[L] != 0)) {
                 DM[OX[L] - 1][OY[L] - 1] = 100 - OHP[L];
                 VM[OX[L] - 1][OY[L] - 1] = 4;
-              }
-              if ((OX[L] != 5) and (OY[L] != 2)) {
+                }
+                if ((OX[L] != 5) and (OY[L] != 2)) {
                 DM[OX[L] + 1][OY[L] + 1] = 100 - OHP[L];
                 VM[OX[L] + 1][OY[L] + 1] = 4;
-              }
-              if ((OX[L] != 0) and (OY[L] != 2)) {
+                }
+                if ((OX[L] != 0) and (OY[L] != 2)) {
                 DM[OX[L] - 1][OY[L] + 1] = 100 - OHP[L];
                 VM[OX[L] - 1][OY[L] + 1] = 4;
-              }
+                }*/
               OHP[L] = 100;
-      BGM=80;
+              BGM = 80;
             }
 
 
@@ -1025,26 +1046,26 @@ void loop() {
             } else if (TM[L] == 3) {
               MO[1 - TP[L]] = 7;
               MT[1 - TP[L]] = 18;
-            } else if (TM[L] == 6) {
+            } else if ((TM[L] == 6) or (TM[L] == 9) or (TM[L] == 12)) {
               MO[1 - TP[L]] = 7;
               MT[1 - TP[L]] = 7;
               PHIT[1 - TP[L]] = 13;
-            } else if (TM[L] == 9) {
+            }/* else if (TM[L] == 9) {
               MO[1 - TP[L]] = 7;
               MT[1 - TP[L]] = 7;
               PHIT[1 - TP[L]] = 13;
-            } else if (TM[L] == 10) {
+            }*/ else if (TM[L] == 10) {
               MO[1 - TP[L]] = 7;
               MT[1 - TP[L]] = 30;
             } else if (TM[L] == 11) {
               MO[1 - TP[L]] = 7;
               MT[1 - TP[L]] = 8;
               PHIT[1 - TP[L]] = 5;
-            } else if (TM[L] == 12) {
+            }/* else if (TM[L] == 12) {
               MO[1 - TP[L]] = 7;
               MT[1 - TP[L]] = 7;
               PHIT[1 - TP[L]] = 13;
-            }
+            }*/
             if (TM[L] != 11) {
               TM[L] = 0;
             }
@@ -1153,7 +1174,7 @@ void loop() {
               if (L == 0) {
                 Cchage = Cchage + 26;
               }
-      BGM=4;
+              BGM = 4;
             }
           } else if (MO[L] == 6) { //キューブ落下
             PG[L] = 1;
@@ -1165,7 +1186,7 @@ void loop() {
             OY[ONo + 1] = PY[L];
             OT[ONo + 1] = 10;
             ONo = ONo + 1;
-      BGM=5;
+            BGM = 5;
           } else if (MO[L] == 7) { //ダメージ
             PG[L] = 6;
           } else if ( MO[L] == 8 ) { //ワープ移動
@@ -1183,7 +1204,7 @@ void loop() {
               TY[TC] = PY[L];
               TP[TC] = L;
               TC = (TC + 1) % 10;
-      BGM=3;
+              BGM = 3;
             }
           } else if (MO[L] == 10) { //砲台落下
             PG[L] = 1;
@@ -1195,7 +1216,7 @@ void loop() {
             OY[ONo + 1] = PY[L];
             OT[ONo + 1] = 10;
             ONo = ONo + 1;
-      BGM=5;
+            BGM = 5;
           } else if (MO[L] == 11) { //エアーショット
             PG[L] = 1;
             if (MT[L] == 2) {
@@ -1204,7 +1225,7 @@ void loop() {
               TY[TC] = PY[L];
               TP[TC] = L;
               TC = (TC + 1) % 10;
-      BGM=12;
+              BGM = 12;
             }
           } else if (MO[L] == 12) { //ボム
             PG[L] = 1;
@@ -1214,8 +1235,8 @@ void loop() {
               TY[TC] = PY[L];
               TP[TC] = L;
               TT[TC] = 0;
-              TC = (TC + 1) % 10;   
-      BGM=12;
+              TC = (TC + 1) % 10;
+              BGM = 12;
             }
           } else if (MO[L] == 13) { //投げキューブ
             PG[L] = 1;
@@ -1226,7 +1247,7 @@ void loop() {
               TP[TC] = L;
               TT[TC] = 0;
               TC = (TC + 1) % 10;
-      BGM=12;
+              BGM = 12;
             }
           } else if (MO[L] == 14) { //ウェーブ
             PG[L] = 1;
@@ -1236,7 +1257,7 @@ void loop() {
               TY[TC] = PY[L];
               TP[TC] = L;
               TC = (TC + 1) % 10;
-      BGM=7;
+              BGM = 7;
             }
           } else if (MO[L] == 15) { //ブレイク弾
             PG[L] = 1;
@@ -1246,44 +1267,44 @@ void loop() {
               TY[TC] = PY[L];
               TP[TC] = L;
               TC = (TC + 1) % 10;
-      BGM=5;
+              BGM = 5;
             }
           } else if (MO[L] == 16) { //ポルターガイスト
             PG[L] = 14;
             if (MT[L] == 2) {
               TM[TC] = 8;
-              TX[TC] = (L * 5) * 16 + 24;
+              TX[TC] = (L * 5) * 17 + 20;
               TY[TC] = 0;
               TP[TC] = L;
               TC = (TC + 1) % 10;
 
               TM[TC] = 8;
-              TX[TC] = (L * 5) * 16 + 24;
+              TX[TC] = (L * 5) * 17 + 20;
               TY[TC] = 1;
               TP[TC] = L;
               TC = (TC + 1) % 10;
 
               TM[TC] = 8;
-              TX[TC] = (L * 5) * 16 + 24;
+              TX[TC] = (L * 5) * 17 + 20;
               TY[TC] = 2;
               TP[TC] = L;
               TC = (TC + 1) % 10;
-      BGM=18;
+              BGM = 18;
             }
           } else if (MO[L] == 17) { //ファイヤー
             PG[L] = 1;
             if (MT[L] == 2) {
               TM[TC] = 9;
-              TX[TC] = (L * 5) * 16 + 24;
+              TX[TC] = (L * 5) * 17 + 20;
               TY[TC] = (PY[L] + 1) % 3;
               TP[TC] = L;
               TC = (TC + 1) % 10;
               TM[TC] = 9;
-              TX[TC] = (L * 5) * 16 + 24;
+              TX[TC] = (L * 5) * 17 + 20;
               TY[TC] = (PY[L] + 2) % 3;
               TP[TC] = L;
               TC = (TC + 1) % 10;
-      BGM=6;
+              BGM = 6;
             }
           } else if (MO[L] == 18) { //麻痺攻撃
             PG[L] = 1;
@@ -1293,7 +1314,7 @@ void loop() {
               TY[TC] = PY[L];
               TP[TC] = L;
               TC = (TC + 1) % 10;
-      BGM=14;
+              BGM = 14;
             }
           } else if (MO[L] == 19) { //ブーメラン
             PG[L] = 1;
@@ -1304,11 +1325,11 @@ void loop() {
               TP[TC] = L;
               TT[TC] = 0;
               TC = (TC + 1) % 10;
-        BGM=10;
+              BGM = 10;
             }
           } else if (MO[L] == 20) { //ボディー
             PG[L] = 14;
-            
+
           } else if (MO[L] == 21) { //プリズム落下
             PG[L] = 1;
             MT[L] = 0;
@@ -1319,7 +1340,7 @@ void loop() {
             OY[ONo + 1] = PY[L];
             OT[ONo + 1] = 10;
             ONo = ONo + 1;
-      BGM=5;
+            BGM = 5;
           }  else if (MO[L] == 22) { //ファイヤーショット
             PG[L] = 1;
             if (MT[L] == 2) {
@@ -1327,8 +1348,8 @@ void loop() {
               TX[TC] = PX[L] * 16 + 24;
               TY[TC] = PY[L];
               TP[TC] = L;
-              TC = (TC + 1) % 10; 
-      BGM=8;
+              TC = (TC + 1) % 10;
+              BGM = 8;
             }
           }/*  else if (MO[L] == 23) {//何もしない
             PG[L] = 0;
@@ -1410,8 +1431,8 @@ void loop() {
         if (VM[L][LLL] != 0) {
           GWrite (16 + 8 + L * 16, 22 + 8 + LLL * 8 - 4, 5, VM[L][LLL], 0);
           /*if (VM[L][LLL] == 3){
-        BGM=1;
-          }*/
+            BGM=1;
+            }*/
         }
       }
 
@@ -1431,46 +1452,46 @@ void loop() {
       if ((TIME / 5) % 2 == 0) {
         //arduboy.drawBitmap(10 + 12 * CPcel - 4 - 2, 56 - 4 + 2, rever, 8, 8, 2);
       }
-      
-        arduboy.drawRect(4 + 12 * CPcel - 2, 52, 12, 12, 1);
+
+      arduboy.drawRect(4 + 12 * CPcel - 2, 52, 12, 12, 1);
       //if (CPco == 0) {
-        /*arduboy.drawFastVLine(4 + 12 * CPcel - 2, 52, 12, 1);
+      /*arduboy.drawFastVLine(4 + 12 * CPcel - 2, 52, 12, 1);
         arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 52, 12, 1);
         arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52, 12, 1);
         arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52 + 11, 12, 1);
-        */
-      //} else 
+      */
+      //} else
       if (CPco == 1) {
         /*
-        arduboy.drawFastVLine(4 + 12 * CPcel - 2, 57, 7, 1);
-        arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 57, 7, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel - 2, 57, 7, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 57, 7, 1);
 
-        arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52, 12, 1);
-        arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52 + 11, 12, 1);
+          arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52, 12, 1);
+          arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52 + 11, 12, 1);
         */
         arduboy.drawFastVLine(4 + 12 * CPcel - 2, 53, 4, 0);
         arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 53, 4, 0);
       } else if (CPco == 2) {
         /*
-        arduboy.drawFastVLine(4 + 12 * CPcel - 2, 52, 4, 1);
-        arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 52, 4, 1);
-        arduboy.drawFastVLine(4 + 12 * CPcel - 2, 58 + 2, 4, 1);
-        arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 58 + 2, 4, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel - 2, 52, 4, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 52, 4, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel - 2, 58 + 2, 4, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 58 + 2, 4, 1);
 
-        arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52, 12, 1);
-        arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52 + 11, 12, 1);
+          arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52, 12, 1);
+          arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52 + 11, 12, 1);
 
         */
-        
+
         arduboy.drawFastVLine(4 + 12 * CPcel - 2, 56, 4, 0);
         arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 56, 4, 0);
       } else if (CPco == 3) {
         /*
-        arduboy.drawFastVLine(4 + 12 * CPcel - 2, 52, 7, 1);
-        arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 52, 7, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel - 2, 52, 7, 1);
+          arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 52, 7, 1);
 
-        arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52, 12, 1);
-        arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52 + 11, 12, 1);
+          arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52, 12, 1);
+          arduboy.drawFastHLine(4 + 12 * CPcel - 2, 52 + 11, 12, 1);
         */
         arduboy.drawFastVLine(4 + 12 * CPcel - 2, 59, 4, 0);
         arduboy.drawFastVLine(4 + 12 * CPcel + 11 - 2, 59, 4, 0);
@@ -1550,10 +1571,10 @@ void loop() {
       arduboy.print(random(10));
     */
   }
-  
-        if ((SED==1)and(BGM!=0)){
-        sound.tone(50*BGM, 100);//爆発
-        }
+
+  if ((SED == 1) and (BGM != 0)) {
+    sound.tone(50 * BGM, 100); //爆発
+  }
 
   arduboy.display();
 }

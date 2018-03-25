@@ -1,10 +1,10 @@
 
-	BattleNetBoy Ver1.00
+	BattleNetBoy Ver1.01
 
 
 
 
-ySoftware namez	BattleNetBoy Ver1.00
+ySoftware namez	BattleNetBoy Ver1.01
 yCopyright holderz@@SUMA
 yProduction datez@@@2018/3/23
 yBy typez	Free software
@@ -113,3 +113,4 @@
 
 EChange log
 2018/3/23@ver1.00@Completion
+2018/3/25@ver1.01@Change randomSeed, add SP level above enemy level 3, fixed bug that Gust did not come out from the back.

@@ -1,10 +1,10 @@
 
-	BattleNetBoy Ver1.00
+	BattleNetBoy Ver1.01
 
 
 
 
-【ソフト名】	BattleNetBoy Ver1.00
+【ソフト名】	BattleNetBoy Ver1.01
 【著作権者】　　SUMA
 【制作日】　　　2018/3/23
 【種　別】	フリーソフトウェア
@@ -113,3 +113,4 @@
 
 ・更新履歴
 2018/3/23　ver1.00　完成
+2018/3/25　ver1.01　randomSeedの変更、敵のレベル3より上のSPレベルの追加、Gustが後方から出なかった不具合を修正。
