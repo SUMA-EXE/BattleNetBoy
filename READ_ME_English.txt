@@ -1,10 +1,10 @@
 
-	BattleNetBoy Ver1.01
+	BattleNetBoy Ver1.02
 
 
 
 
-【Software name】	BattleNetBoy Ver1.01
+【Software name】	BattleNetBoy Ver1.02
 【Copyright holder】　　SUMA
 【Production date】　　　2018/3/23
 【By type】	Free software
@@ -53,6 +53,8 @@
 	
 	　Also, up to four obstacles can be placed. If four or more are placed, the oldest obstacles will be broken in order.
 	
+	　The opponent can choose from Buster Man, Cube Man, Tank Man, Break Man, CPU 1, Evil Virus.
+
 	・CPU1 VS CPU2 mode
 	　It is a mode in which CPUs fight with 3 cards set.
 
@@ -111,6 +113,14 @@
 	　・Fire　Power120
 	　　It fires a bullet in front of you and attacks it.
 
+	　・Breath　Power50
+	　　I attack T-shape from the front of myself. Things that do not cause invincible time will hit 3.
+
+	　・Shield
+	　　Give yourself a barrier to disable attacks once.
+
+
 ・Change log
 2018/3/23　ver1.00　Completion
 2018/3/25　ver1.01　Change randomSeed, add SP level above enemy level 3, fixed bug that Gust did not come out from the back.
+2018/3/30　ver1.02　Add two new cards, add new enemy Evil virus, change enemy figure, add CPU1 card storage function.

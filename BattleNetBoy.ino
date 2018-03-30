@@ -17,63 +17,71 @@ int BB = 0;
 int BGM = 0;
 int SED = 0;
 
-int Matk[3][3] = {{5, 0, 5}, {6, 0, 10}, {9, 0, 14}};
+uint8_t Matk[3][3] = {{5, 0, 5}, {6, 0, 10}, {9, 0, 14}};
 
 int TIME = 0;
 
 int R = 0;
 
-int mode = 0;
+uint8_t mode = 0;
 
+int Or=0;
+int OBHP=0;
 
-int finish = 0;
+uint8_t Gr[2]={0};
+int PHPB[2] = {0};
+uint8_t MOB[2] = {0}; //モーション
+uint8_t MTB[2] = {0}; //モーション時間
+uint8_t PGB[2] = {0};
 
-int LEV[2] = {0}; //レベル
-int CPUtype = 0;
+uint8_t finish = 0;
+
+uint8_t LEV[2] = {0}; //レベル
+uint8_t CPUtype = 0;
 
 int MAXHP[2] = {1000};
 
-int PX[2] = {0, 3};
-int PY[2] = {0};
+uint8_t PX[2] = {0, 3};
+uint8_t PY[2] = {0};
 int PHP[2] = {0};
-int PG[2] = {0}; //プレイヤー画像
-int PHIT[2] = {0};
+uint8_t PG[2] = {0}; //プレイヤー画像
+uint8_t PHIT[2] = {0};
 
-int MO[2] = {0}; //モーション
-int MT[2] = {0}; //モーション時間
+uint8_t MO[2] = {0}; //モーション
+uint8_t MT[2] = {0}; //モーション時間
 int IT[2] = {0};
 
 int PRM[2] = {0};//ﾗﾝﾀﾞﾑ行動用
-int CPU[2] = {0, 1};
+uint8_t CPU[2] = {0, 1};
 
-int DM[6][3] = {0};
+uint8_t DM[6][3] = {0};
 
-int INM[6][3] = {0};//移動不可能
-int VM[6][3] = {0};//爆発マス
+uint8_t INM[6][3] = {0};//移動不可能
+uint8_t VM[6][3] = {0};//爆発マス
 
 int TX[10] = {0};
-int TY[10] = {0};
-int TP[10] = {0};
-int TT[10] = {0};
-int TM[10] = {0};//弾モーション
-int TC = 0; //弾カウント
+uint8_t TY[10] = {0};
+uint8_t TP[10] = {0};
+uint8_t TT[10] = {0};
+uint8_t TM[10] = {0};//弾モーション
+uint8_t TC = 0; //弾カウント
 
-int OX[6] = {0}; //オブジェクト
-int OY[6] = {0};
-int OM[6] = {0};
+uint8_t OX[6] = {0}; //オブジェクト
+uint8_t OY[6] = {0};
+uint8_t OM[6] = {0};
 int OHP[6] = {0};
-int OT[6] = {0};
-int OHIT[6] = {0}; //攻撃受けた
-int OB[6] = {0}; //ノックバック
-int ONo = 0;
+uint8_t OT[6] = {0};
+uint8_t OHIT[6] = {0}; //攻撃受けた
+uint8_t OB[6] = {0}; //ノックバック
+uint8_t ONo = 0;
 
-int Fr[15] = {0}; //フォルダー
-int FrB[15] = {0}; //フォルダー
+uint8_t Fr[15] = {0}; //フォルダー
+uint8_t FrB[15] = {0}; //フォルダー
 int FrNo = 0;
-int Hnd[5] = {0}; //手札
-int Cchage = 0;
-int CPcel = 0;
-int CPco = 0;
+uint8_t Hnd[5] = {0}; //手札
+uint8_t Cchage = 0;
+uint8_t CPcel = 0;
+uint8_t CPco = 0;
 
 /*const unsigned char PROGMEM rever[] =
   {
@@ -82,7 +90,7 @@ int CPco = 0;
   };*/
 
 //キャラクター描写
-void GWrite (int G_x, int G_y, int G_m, int G_P, int G_t) { //x,y,画像種類,パターン,色抜き
+void GWrite (int G_x, int G_y, uint8_t G_m, uint8_t G_P, uint8_t G_t) { //x,y,画像種類,パターン,色抜き
 
   if (G_m == 0) { //立ち絵
     ardbitmap.drawCompressed(G_x , G_y, F1, 1 - G_P * (G_t == 0), ALIGN_CENTER, G_P); //画像表示
@@ -193,11 +201,45 @@ void GWrite (int G_x, int G_y, int G_m, int G_P, int G_t) { //x,y,画像種類,�
     if (G_t == 0) {
       ardbitmap.drawCompressed(G_x , G_y, PR2, G_P - 0, ALIGN_CENTER, G_P);
     }
+  } else if (G_m == 19) { //ラスボス
+    ardbitmap.drawCompressed(G_x , G_y, FB1, 1 - G_P, ALIGN_CENTER, 0); //画像表示
+
+    if (G_t == 0) {
+      ardbitmap.drawCompressed(G_x , G_y, FB2, G_P - 0, ALIGN_CENTER, 0);
+    }
+  }else if (G_m == 20) { //頭1
+    ardbitmap.drawCompressed(G_x , G_y, HED11, 1 - G_P * (G_t == 0), ALIGN_CENTER, G_P); //画像表示
+
+    if (G_t == 0) {
+      ardbitmap.drawCompressed(G_x , G_y, HED12, G_P - 0, ALIGN_CENTER, G_P);
+    }
+
+  }else if (G_m == 21) { //頭1
+    ardbitmap.drawCompressed(G_x , G_y, HED21, 1 - G_P * (G_t == 0), ALIGN_CENTER, G_P); //画像表示
+
+    if (G_t == 0) {
+      ardbitmap.drawCompressed(G_x , G_y, HED22, G_P - 0, ALIGN_CENTER, G_P);
+    }
+
+  }else if (G_m == 22) { //頭1
+    ardbitmap.drawCompressed(G_x , G_y, HED31, 1 - G_P * (G_t == 0), ALIGN_CENTER, G_P); //画像表示
+
+    if (G_t == 0) {
+      ardbitmap.drawCompressed(G_x , G_y, HED32, G_P - 0, ALIGN_CENTER, G_P);
+    }
+
+  }else if (G_m == 23) { //頭1
+    ardbitmap.drawCompressed(G_x , G_y, HED41, 1 - G_P * (G_t == 0), ALIGN_CENTER, G_P); //画像表示
+
+    if (G_t == 0) {
+      ardbitmap.drawCompressed(G_x , G_y, HED42, G_P - 0, ALIGN_CENTER, G_P);
+    }
+
   }
 }
 
 
-void CPname(int A_n) {
+void CPname(uint8_t A_n) {
   if (A_n == 5) {
     arduboy.print(F("Buster"));
   } else if (A_n == 6) {
@@ -230,13 +272,17 @@ void CPname(int A_n) {
     arduboy.print(F("Prism"));
   } else if (A_n == 22) {
     arduboy.print(F("Fire"));
+  } else if (A_n == 23) {
+    arduboy.print(F("Breath"));
+  } else if (A_n == 24) {
+    arduboy.print(F("Shield"));
   }
 
 }
 
 //威力
-int CPpower(int A_n) {
-  int No = 0;
+uint16_t CPpower(uint8_t A_n) {
+  uint16_t No = 0;
   if (A_n == 5) {
     No = 30;
   } else if (A_n == 9) {
@@ -259,13 +305,15 @@ int CPpower(int A_n) {
     No = 300;
   } else if (A_n == 22) {
     No = 120;
+  } else if (A_n == 23) {
+    No = 50;
   }
   return No;
 }
 
 //コード
-int CPcode(int A_n) {
-  int No = 0;
+uint8_t CPcode(uint8_t A_n) {
+  uint8_t No = 0;
   if (A_n == 5) {
     No = 1;
   } else if (A_n == 6) {
@@ -298,13 +346,17 @@ int CPcode(int A_n) {
     No = 3;
   } else if (A_n == 22) {
     No = 3;
+  } else if (A_n == 23) {
+    No = 2;
+  } else if (A_n == 24) {
+    No = 1;
   }
   return No;
 }
 
 //時間
-int ATKtime (int A_n) {
-  int No = 0;
+uint8_t ATKtime (uint8_t A_n) {
+  uint8_t No = 0;
   if (A_n == 5) {
     No = 4;
   } else if (A_n == 6) {
@@ -337,6 +389,10 @@ int ATKtime (int A_n) {
     No = 1;
   } else if (A_n == 22) {
     No = 6;
+  } else if (A_n == 23) {
+    No = 12;
+  } else if (A_n == 24) {
+    No = 1;
   }
 
 
@@ -344,7 +400,7 @@ int ATKtime (int A_n) {
 }
 
 
-void CPWrite (int C_x, int C_y, int C_m, int C_P) { //x,y,画像種類,色抜き
+void CPWrite (int C_x, int C_y, uint8_t C_m, uint8_t C_P) { //x,y,画像種類,色抜き
 
 
   if (C_m == 1) { //立ち絵
@@ -381,6 +437,10 @@ void CPWrite (int C_x, int C_y, int C_m, int C_P) { //x,y,画像種類,色抜き
     ardbitmap.drawCompressed(C_x , C_y, CP21, C_P, ALIGN_CENTER, 0); //画像表示
   } else  if (C_m == 22) { //立ち絵
     ardbitmap.drawCompressed(C_x , C_y, CP22, C_P, ALIGN_CENTER, 0); //画像表示
+  } else  if (C_m == 23) { //立ち絵
+    ardbitmap.drawCompressed(C_x , C_y, CP23, C_P, ALIGN_CENTER, 0); //画像表示
+  } else  if (C_m == 24) { //立ち絵
+    ardbitmap.drawCompressed(C_x , C_y, CP24, C_P, ALIGN_CENTER, 0); //画像表示
   }
 
 }
@@ -394,7 +454,7 @@ void setup() {
   arduboy.initRandomSeed();
 
   SED = EEPROM.read(495);
-  for (int L = 0; L <= 14; L++) {
+  for (uint16_t L = 0; L <= 14; L++) {
     FrB[L] = EEPROM.read(L + 496);
 
     if (FrB[L] == 0) {
@@ -402,6 +462,16 @@ void setup() {
     }
 
   }
+
+  
+      Matk[0][0] = EEPROM.read(492);
+      Matk[1][0] = EEPROM.read(493);
+      Matk[2][0] = EEPROM.read(494);
+      for (uint16_t L = 0; L <= 2; L++) {
+      if (Matk[L][0] == 0) {
+        Matk[L][0]=10+L;
+      }
+      }
 
 
 }
@@ -420,17 +490,18 @@ void loop() {
 
     TIME = 0;
 
-
+Or=0;
 
     PX[0] = 1;
     PX[1] = 4;
 
 
-    for (int L = 0; L <= 1; L++) {
+    for (uint8_t L = 0; L <= 1; L++) {
 
       PY[L] = 1;
       PHP[L] = 0;
       PHIT[L] = 0;
+      Gr[L]=0;
 
       MO[L] = 0; //モーション
       IT[L] = 0;
@@ -441,18 +512,18 @@ void loop() {
 
 
 
-    for (int L = 0; L <= 9; L++) {
+    for (uint16_t L = 0; L <= 9; L++) {
       TP[L] = 0;
       TM[L] = 0;//弾モーション
     }
     TC = 0; //弾カウント
 
-    for (int L = 0; L <= 5; L++) {
+    for (uint8_t L = 0; L <= 5; L++) {
       OM[L] = {0};
       OHP[L] = {0};
       OB[L] = {0}; //ノックバック
 
-      for (int LL = 0; LL <= 2; LL++) {
+      for (uint8_t LL = 0; LL <= 2; LL++) {
         VM[L][LL] = 0;//爆発マス
       }
 
@@ -461,7 +532,7 @@ void loop() {
 
     //Fr[15]={0};//フォルダー
     FrNo = 0;
-    for (int L = 0; L <= 4; L++) {
+    for (uint8_t L = 0; L <= 4; L++) {
       Fr[L] = 0;
       Fr[L + 5] = 0;
       Fr[L + 10] = 0;
@@ -485,6 +556,7 @@ void loop() {
       MAXHP[1] = 3000;
     }
 
+MAXHP[1] = MAXHP[1] + 1000*(CPUtype == 5);
 
 
     arduboy.setCursor(28, 8);
@@ -512,12 +584,13 @@ void loop() {
       Matk[1][1] = 15;
       Matk[2][1] = 17;
       arduboy.print(F("Break Man"));
-    } else {
+    } else if (CPUtype == 4){
       Matk[0][1] = Matk[0][0];
       Matk[1][1] = Matk[1][0];
       Matk[2][1] = Matk[2][0];
       arduboy.print(F("CPU1"));
-
+    }else{
+      arduboy.print(F("Evil Virus"));
     }
 
     arduboy.setCursor(28, 16);
@@ -539,8 +612,8 @@ void loop() {
       arduboy.print(F("SE:OFF"));
     }
 
-    for (int LL = 0; LL <= 2; LL = LL + 2) {
-      for (int L = 0; L <= 2; L++) {
+    for (uint8_t LL = 0; LL <= 2; LL = LL + 2) {
+      for (uint8_t L = 0; L <= 2; L++) {
         CPWrite(24 * LL + 4 + 28, L * 8 + 44, 1, 1);
         CPWrite(24 * LL + 4 + 28, L * 8 + 44, Matk[L][LL], 0);
       }
@@ -583,7 +656,7 @@ void loop() {
 
     if (  (arduboy.justPressed(A_BUTTON)) or (arduboy.justPressed(B_BUTTON)) ) {
 
-      CPUtype = (CPUtype + (xx == 1)) % 5;
+      CPUtype = (CPUtype + (xx == 1)) % 6;
       LEV[1] = (LEV[1] + (xx == 2)) % 4;
 
       mode = 0 + (xx == 0) + (xx == 3) * 2 + (xx == 4) * 3;
@@ -593,15 +666,15 @@ void loop() {
         EEPROM.write(495, SED);
       }
       if (xx >= 5) {
-        Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] = (Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] + 1) % 23;
+        Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] = (Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] + 1) % 25;
       }
     }
 
 
-    for (int L = 0; L <= 10; L++) {
+    for (uint8_t L = 0; L <= 10; L++) {
       if ((xx >= 5) and (xx != 11)) {
         if (CPcode(Matk[(xx - 5) % 3][((xx - 5) / 3) * 2]) == 0) {
-          (Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] = Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] + 1) % 23;
+          (Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] = Matk[(xx - 5) % 3][((xx - 5) / 3) * 2] + 1) % 25;
         }
       }
     }
@@ -622,7 +695,7 @@ void loop() {
 
     if ( (arduboy.justPressed(A_BUTTON)) or (arduboy.justPressed(B_BUTTON)) ) {
       if (xx != 15) {
-        FrB[xx] = (FrB[xx] + 1) % 23;
+        FrB[xx] = (FrB[xx] + 1) % 25;
       } else {
         mode = 0;
         xx = 0;
@@ -635,16 +708,16 @@ void loop() {
     }
 
 
-    for (int L = 0; L <= 10; L++) {
+    for (uint8_t L = 0; L <= 10; L++) {
       if (xx != 15) {
         if (CPcode(FrB[xx]) == 0) {
-          (FrB[xx] = FrB[xx] + 1) % 23;
+          (FrB[xx] = FrB[xx] + 1) % 24;
         }
       }
     }
     //    arduboy.setCursor(64 * (xx / 8 == 1)-1, (xx % 8) * 8);
     //    arduboy.print(F(">"));
-    for (int L = 0; L <= 14; L++) {
+    for (uint8_t L = 0; L <= 14; L++) {
       CPWrite(64 * (L / 8 == 1) + 4, (L % 8) * 8 + 4, 1, 1);
       CPWrite(64 * (L / 8 == 1) + 4, (L % 8) * 8 + 4, FrB[L], 0);
       arduboy.setCursor(9 + 64 * (L / 8 == 1), (L % 8) * 8);
@@ -675,6 +748,16 @@ void loop() {
     LEV[0] = 2;
     LEV[1] = 2;
     MAXHP[1] = 1000;
+
+    if(Matk[0][0] != EEPROM.read(492)){
+          EEPROM.write(492, Matk[0][0]);
+    }
+    if(Matk[1][0] != EEPROM.read(493)){
+          EEPROM.write(493, Matk[1][0]);
+    }
+    if(Matk[2][0] != EEPROM.read(494)){
+          EEPROM.write(494, Matk[2][0]);
+    }
 
   } else if (mode == 1) {
     //バトルモード
@@ -752,14 +835,14 @@ void loop() {
       }
 
       if (FrNo == 0) {
-        for (int L = 0; L <= 14; L++) {
+        for (uint8_t L = 0; L <= 14; L++) {
           Fr[L] = FrB[L];
         }
         FrNo = 15;
       }
 
       //フォルダー関係
-      for (int L = 0; L <= 13; L++) {
+      for (uint8_t L = 0; L <= 13; L++) {
         if (Fr[L] == 0) {
           Fr[L] = Fr[L + 1];
           Fr[L + 1] = 0;
@@ -788,7 +871,7 @@ void loop() {
 
       //CPU行動用
 
-      for (int L = 0; L <= 1; L++) {
+      for (uint8_t L = 0; L <= 1; L++) {
         if (CPU[L] != 0) {
           if (MT[L] == 0 ) {
             (PRM[L] = PRM[L] + 1) % 100;
@@ -801,7 +884,7 @@ void loop() {
                 MT[L] = 5;
               }
 
-              MO[L] = 23;
+              MO[L] = 25;
             } else if (PRM[L] % 10 == 0) {
               MT[L] = 4 - LEV[L];
               MO[L] = 8;
@@ -820,13 +903,67 @@ void loop() {
         }
       }
 
+      if (CPUtype==5){
+        MT[1]=0;
+        MO[1]=0;
+        if((TIME%400)==0){
+       Or=0;
+       BGM=24;
+        }else if((TIME%400)/100==1){
+        if(TIME%((16-2*LEV[1]-(MAXHP[1]/2<PHP[1])*4))==0){
+              TM[TC] = 1;
+              TX[TC] =  105;
+              TY[TC] = PY[0];
+              TP[TC] = 1;
+              TC = (TC + 1) % 10;
+              BGM = 4;
+      }
+      }else if((TIME%400)/100==3){
+      if(MAXHP[1]/2>PHP[1]){
+        if(TIME%10==0){
+              TM[TC] = 4;
+              TX[TC] =  105-16*((TIME%100)%3)-16;
+              TY[TC] = 1;
+              TP[TC] = 1;
+              TT[TC] = 1;
+              TC = (TC + 1) % 10;
+              BGM = 12;
+      }
+      }else{
+        if(TIME%5==0){
+              TM[TC] = 5;
+              TX[TC] =  105-16*(((TIME%100)/15)%3)-16;
+              TY[TC] = (((TIME%100)%15)/5);
+              TP[TC] = 1;
+              TT[TC] = 1;
+              TC = (TC + 1) % 10;
+              BGM = 12;
+        }else if(TIME%5==1){
+            OHP[3] = 0;
+            OM[3] = 0;
+        }
+      }
+      }else if(TIME%(30-LEV[1]*3)==0){
+      
+            R = random(3);
+              TM[TC] = 2*(MAXHP[1]/2>PHP[1])+7;
+              TX[TC] =  105;
+              TY[TC] = R;
+              TP[TC] = 1;
+              TC = (TC + 1) % 10;
+              BGM = 6;
+      }
+      
+        
+      }
+
 
 
 
 
       //ダメージエリア表示初期化
-      for (int x = 0; x <= 5; x++) {
-        for (int y = 0; y <= 2; y++) {
+      for (uint8_t x = 0; x <= 5; x++) {
+        for (uint8_t y = 0; y <= 2; y++) {
           DM[x][y] = 0;
           INM[x][y] = 0;
           if (VM[x][y] > 0) {
@@ -850,8 +987,8 @@ void loop() {
       }
 
       //オブジェ詰める
-      for (int LL = 0; LL <= 5; LL++) {
-        for (int L = 0; L <= 4; L++) {
+      for (uint8_t LL = 0; LL <= 5; LL++) {
+        for (uint8_t L = 0; L <= 4; L++) {
           if (OHP[L] <= 0) {
             OHP[L] = OHP[L + 1];
             OM[L] = OM[L + 1];
@@ -876,7 +1013,7 @@ void loop() {
 
 
       //オブジェクト
-      for (int L = 0; L <= 5; L++) {
+      for (uint8_t L = 0; L <= 5; L++) {
         if (OHP[L] != 0) {
           OT[L] = OT[L] - (OT[L] > 0);
           ONo = L;
@@ -959,7 +1096,7 @@ void loop() {
             }
 
 
-            for (int LL = 0; LL <= 1; LL++) {
+            for (uint8_t LL = 0; LL <= 1; LL++) {
               if ( (PX[LL] == OX[L]) and (PY[LL] == OY[L])) {
                 PHP[LL] = PHP[LL] + 200;
                 MO[LL] = 7;
@@ -970,7 +1107,7 @@ void loop() {
 
               }
             }
-            for (int LL = 0; LL <= 5; LL++) {
+            for (uint8_t LL = 0; LL <= 5; LL++) {
               if ((L != LL) and (OHP[LL] > 0) and (OM[LL] != 0) and (OT[LL] == 0) and (OX[LL] == OX[L]) and (OY[LL] == OY[L])) {
                 VM[OX[L]][OY[L]] = 5;
 
@@ -995,7 +1132,7 @@ void loop() {
 
 
       //弾処理
-      for (int L = 0; L <= 9; L++) {
+      for (uint8_t L = 0; L <= 9; L++) {
         if (TM[L] == 0) {
           TX[L] = 0;
           TY[L] = 0;
@@ -1072,7 +1209,7 @@ void loop() {
 
           }
           //オブジェヒット
-          for (int LL = 0; LL <= 5; LL++) {
+          for (uint8_t LL = 0; LL <= 5; LL++) {
             if ( ( ((TX[L] - 16) / 16) % 6 == OX[LL] ) and (TY[L] == OY[LL]) and ( OHP[LL] > 0 ) and (TM[L] != 4) and (TM[L] != 5) and (TM[L] != 6) and ((TM[L] != 1) or ((OX[LL] <= 2) == TP[L]) or (OM[LL] != 2) ) ) {
               OHIT[LL] = 3;
               OHP[LL] = OHP[LL] - 30 * (TM[L] == 1) - 80 * (TM[L] == 2) - 40 * (TM[L] == 3) - 1000 * (TM[L] == 7) - 60 * (TM[L] == 9) - 20 * (TM[L] == 10) - 70 * (TM[L] == 11) - 120 * (TM[L] == 12);
@@ -1099,7 +1236,7 @@ void loop() {
 
 
       //燃えるボディー攻撃
-      for (int L = 0; L <= 1; L++) {
+      for (uint8_t L = 0; L <= 1; L++) {
         if ( (MT[L] == 2) and (MO[L] == 20) ) {
           if (PX[L] != 5) {
             DM[PX[L] + 1][PY[L]] = 300;
@@ -1117,15 +1254,31 @@ void loop() {
             DM[PX[L]][PY[L] + 1] = 300;
             VM[PX[L]][PY[L] + 1] = 4;
           }
+        }else if ( ((MT[L] == 2)or(MT[L] == 4)or(MT[L] == 6)) and (MO[L] == 23) ) {
+      //息
+            DM[PX[L] + 1-2*L][PY[L]] = 50;
+            VM[PX[L] + 1-2*L][PY[L]] = 4;
+            
+            DM[PX[L] + 2-4*L][PY[L]] = 50;
+            VM[PX[L] + 2-4*L][PY[L]] = 4;
+            
+          if (PY[L] != 0) {
+            DM[PX[L] + 2-4*L][PY[L]-1] = 50;
+            VM[PX[L] + 2-4*L][PY[L]-1] = 4;
+          } 
+          if (PY[L] != 2) {
+            DM[PX[L] + 2-4*L][PY[L]+1] = 50;
+            VM[PX[L] + 2-4*L][PY[L]+1] = 4;
+          }
         }
       }
 
 
       //ダメージ爆風用
-      for (int x = 0; x <= 5; x++) {
-        for (int y = 0; y <= 2; y++) {
+      for (uint8_t x = 0; x <= 5; x++) {
+        for (uint8_t y = 0; y <= 2; y++) {
           if (DM[x][y] >= 10) {
-            for (int L = 0; L <= 1; L++) {
+            for (uint8_t L = 0; L <= 1; L++) {
               if ((PX[L] == x) and (PY[L] == y) and (PHIT[L] <= 3 ) ) {
                 PHP[L] = PHP[L] + DM[x][y];
                 MO[L] = 7;
@@ -1133,7 +1286,7 @@ void loop() {
                 PHIT[L] = 14;
               }
             }
-            for (int L = 0; L <= 5; L++) {
+            for (uint8_t L = 0; L <= 5; L++) {
               if ((OX[L] == x) and (OY[L] == y) ) {
                 OHP[L] = OHP[L] - DM[x][y];
                 OHIT[L] = 3;
@@ -1152,7 +1305,7 @@ void loop() {
 
 
       //処理//モーション/1-4:↑↓→←移動/
-      for (int L = 0; L <= 1; L++) {
+      for (uint8_t L = 0; L <= 1; L++) {
         PG[L] = 0;
         PHIT[L] = PHIT[L] - (PHIT[L] != 0); //攻撃ヒット
         if (MT[L] > 0) {
@@ -1351,9 +1504,14 @@ void loop() {
               TC = (TC + 1) % 10;
               BGM = 8;
             }
-          }/*  else if (MO[L] == 23) {//何もしない
-            PG[L] = 0;
-          }*/
+          }  else if (MO[L] == 23) {//ブレス
+            PG[L] = 1;
+          }  else if (MO[L] == 24) {//バリアー
+            Gr[L] = 1;
+            
+            MT[L] = 0;
+              BGM = 24;
+          }
 
 
 
@@ -1361,11 +1519,41 @@ void loop() {
 
       }
 
+      if (CPUtype==5){
+        PX[1]=4;
+        PY[1]=1;
+        if ((PHP[1]>OBHP-Or)and(Or<100)){
+          Or=Or+PHP[1]-OBHP;
+          PHP[1]=OBHP;
+        }
+        
+        if (PHIT[1]>3){
+          PHIT[1]=2;
+        }
+        OBHP=PHP[1];
+      }
+
+
+      for (uint8_t L = 0; L <= 1; L++) {
+        if ((Gr[L]!=0)and(PHP[L]!=PHPB[L])){
+          Gr[L]=0;
+        PHP[L]=PHPB[L];
+        MO[L]=MOB[L];
+        MT[L]=MTB[L];
+        PHIT[L]=0;
+        PG[L]=PGB[L];
+        }
+        PHPB[L]=PHP[L];
+        MOB[L]=MO[L];
+        MTB[L]=MT[L];
+        PGB[L]=PG[L];
+      }
+
 
     }
     //エリア表示
-    for (int x = 0; x <= 5; x++) {
-      for (int y = 0; y <= 2; y++) {
+    for (uint8_t x = 0; x <= 5; x++) {
+      for (uint8_t y = 0; y <= 2; y++) {
         ardbitmap.drawCompressed(16 + 8 + x * 16 , 32 + 4 + 8 * y - 4, fild2, (x <= 2 )xor( DM[x][y] != 0), ALIGN_CENTER, 0);
         ardbitmap.drawCompressed(16 + 8 + x * 16 , 32 + 4 + 8 * y - 4, fild1, (x > 2 )xor( DM[x][y] != 0), ALIGN_CENTER, 0);
       }
@@ -1373,10 +1561,10 @@ void loop() {
 
 
 
-    for (int LLL = 0; LLL <= 2; LLL++) {//画像ループ
+    for (uint8_t LLL = 0; LLL <= 2; LLL++) {//画像ループ
 
       //オブジェクト
-      for (int L = 0; L <= 5; L++) {
+      for (uint8_t L = 0; L <= 5; L++) {
         if ( (OHP[L] != 0) and (OY[L] == LLL) ) {
           if (OM[L] == 1) {
             GWrite (16 + 8 + OX[L] * 16, 22 + 8 + OY[L] * 8 - OT[L] * 8 - 4, 2, 0 , (OHIT[L] != 0) );
@@ -1390,9 +1578,29 @@ void loop() {
 
 
       //画像表示
-      for (int L = 0; L <= 1; L++) {
+      for (uint8_t L = 0; L <= 1; L++) {
         if (PY[L] == LLL) {
+          if ((CPUtype==5)and(L==1)){
+            //GWrite (16 + 8 + PX[L] * 16, 22 + 8 + PY[L] * 8 - 4, 19, 0 , (PHIT[L] != 0) );
+            GWrite (88, 34, 19, 0 , (PHIT[L] != 0) );
+            if(Or<100){
+            arduboy.drawCircle(88, 34,15,0);
+            arduboy.drawCircle(88, 34,17,0);
+            arduboy.drawCircle(88, 34,16,1);
+            arduboy.setCursor(80, 44);
+            arduboy.print(100-Or);
+            }
+          }else{
           GWrite (16 + 8 + PX[L] * 16, 22 + 8 + PY[L] * 8 - 4, PG[L], L , (PHIT[L] != 0) );
+          if ((CPUtype<4)and(L==1)and((PG[L]!=6)and(PG[L]!=3))){
+            GWrite (16 + 8 + PX[L] * 16, 22 +  PY[L] * 8 , 20+CPUtype, L , (PHIT[L] != 0) );
+          }
+          if (Gr[L]==1){
+            arduboy.drawCircle(16 + 8 + PX[L] * 16, 22 + 8 + PY[L] * 8 - 4,11,0);
+            arduboy.drawCircle(16 + 8 + PX[L] * 16, 22 + 8 + PY[L] * 8 - 4,13,0);
+            arduboy.drawCircle(16 + 8 + PX[L] * 16, 22 + 8 + PY[L] * 8 - 4,12,1);
+            }
+          }
           if ( ( MT[L] == 1 ) and ((MO[L] == 5) or (MO[L] == 9) ) ) {
             GWrite (PX[L] * 16 + 12 + 24 * (1 - L), 22 + 8 + PY[L] * 8 - 3 - 4, 4, L , 0);
           }
@@ -1400,7 +1608,7 @@ void loop() {
       }
 
       //弾丸
-      for (int L = 0; L <= 9; L++) {
+      for (uint8_t L = 0; L <= 9; L++) {
         if (TY[L] == LLL) {
           if ( TM[L] == 2 ) {
             GWrite (TX[L] , 22 + 8 + LLL * 8 - 3 - 4, 7, TP[L], 0);
@@ -1427,7 +1635,7 @@ void loop() {
       }
 
       //爆発エフェクト
-      for (int L = 0; L <= 5; L++) {
+      for (uint8_t L = 0; L <= 5; L++) {
         if (VM[L][LLL] != 0) {
           GWrite (16 + 8 + L * 16, 22 + 8 + LLL * 8 - 4, 5, VM[L][LLL], 0);
           /*if (VM[L][LLL] == 3){
@@ -1443,7 +1651,7 @@ void loop() {
 
     if (CPU[0] == 0) {
       //手札
-      for (int L = 0; L <= 4; L++) {
+      for (uint8_t L = 0; L <= 4; L++) {
         if (Hnd[L] != 0) {
           CPWrite(10 + 12 * L - 2, 56 + 2, 1, 1);
           CPWrite(10 + 12 * L - 2, 56 + 2, Hnd[L], 0);
